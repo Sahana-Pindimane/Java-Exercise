@@ -1,0 +1,142 @@
+package SAHANA_221047012;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalTime;
+import java.util.Properties;
+import java.util.Scanner;
+interface Ecomm
+{
+ void adding();
+ void displaying();
+ void updating();
+}
+class Ecommstore implements Ecomm
+{
+ public void adding()
+ { LocalTime i;
+ Scanner sc=new Scanner(System.in);
+ System.out.println("Enter the ID of the product");
+ String id=sc.nextLine();
+ System.out.println("Enter the product to be added");
+ String text=sc.nextLine();
+ System.out.println("Enter the price of the product");
+ String text1=sc.nextLine();
+ System.out.println("Enter the Quantities to be added ");
+ String text2=sc.nextLine();
+ try
+ {
+ FileReader reader=new 
+FileReader("C:\\Users\\User\\IdeaProjects\\Ecommerce\\src\\SAHANA_221047012\\db.properties");
+ Properties p=new Properties();
+ p.load(reader);
+ String path=p.getProperty("DESTINATION");
+ System.out.println(p.getProperty("DESTINATION"));
+ FileWriter F1 = new FileWriter(path, true);
+ i=java.time.LocalTime.now();
+ F1.write(i.toString());
+ F1.write("\n");
+ F1.write(" ID | Product | Price | Quantity | ");
+ F1.write("\n");
+ F1.write(" "+id+" "+text+" "+" "+text1+" "+" "+text2+" ");
+ F1.write("\n");
+ F1.write("..............................................................................");
+ F1.write("\n");
+ System.out.println("Data inserted successfully");
+ F1.close();
+ } catch (IOException e)
+ {
+ e.printStackTrace();
+ }
+ System.out.println("Do u want to add another product if Yes select 1 to view select 2");
+ int n=sc.nextInt();
+ if(n==1) {
+ adding();
+ }
+ }
+ public void displaying()
+ {
+ try
+ {
+ FileReader reader=new 
+FileReader("C:\\Users\\User\\IdeaProjects\\Ecommerce\\src\\SAHANA_221047012\\db.properties");
+ Properties p1=new Properties();
+ try
+ {
+ p1.load(reader);
+ } catch (IOException e1)
+ {
+ e1.printStackTrace();
+ }
+ String path=p1.getProperty("DESTINATION");
+ FileReader fr = new FileReader(path);
+ int i;
+ try {
+ while ((i = fr.read()) != -1)
+ // Print all the content of a file
+ System.out.print((char)i);
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ } catch (FileNotFoundException e) {
+ e.printStackTrace();
+ }
+ }
+ public void updating()
+ {
+ FileReader reader = null;
+ try {
+ reader = new 
+FileReader("C:\\Users\\User\\IdeaProjects\\Ecommerce\\src\\SAHANA_221047012\\db.properties");
+ } catch (FileNotFoundException e2) {
+ e2.printStackTrace();
+ }
+ Properties p2=new Properties();
+ try {
+ p2.load(reader);
+ } catch (IOException e2) {
+ e2.printStackTrace();
+ }
+ String path=p2.getProperty("DESTINATION");
+ String filePath = path;
+ Scanner sc = null;
+ try {
+ sc = new Scanner(new File(filePath));
+ } catch (FileNotFoundException e1) {
+ e1.printStackTrace();
+ }
+ StringBuffer buffer = new StringBuffer();
+ while (sc.hasNextLine()) {
+ buffer.append(sc.nextLine()+System.lineSeparator());
+ }
+ String fileContents = buffer.toString();
+ System.out.println(fileContents);
+ sc.close();
+ Scanner update=new Scanner(System.in);
+ System.out.println("Enter the product Name to be changed");
+ String oldLine = update.nextLine();
+ System.out.println("Enter the new product name ");
+ String newLine = update.nextLine();
+ fileContents = fileContents.replaceAll(oldLine, newLine);
+ FileWriter writer = null;
+ try {
+ writer = new FileWriter(filePath);
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ System.out.println("");
+ System.out.println("new data: "+fileContents);
+ try {
+ writer.append(fileContents);
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ try {
+ writer.flush();
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ }
+}
