@@ -1,0 +1,82 @@
+Grade.java
+
+class Grade extends Student
+{
+
+@Override
+boolean isPassed(double grade) {
+
+// TODO Auto-generated method stub
+
+if(grade>80)
+return true;
+else
+return false;
+}
+}
+
+Program5.java
+
+import java.util.Scanner;
+public class Program5 {
+
+
+/**
+
+* @param args
+
+*/
+
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+
+
+Scanner scan=new Scanner(System.in);
+Grade g=new Grade();
+System.out.println("=========Grade===========");
+System.out.println("Enter id, name, city, age :-");
+g.setData(scan.nextInt(), scan.next(), scan.next(), scan.nextInt());
+System.out.println("Enter Grade :-");
+if((g.isPassed(scan.nextDouble()))==true)
+System.out.println("You passed the exam.");
+else
+System.out.println("You have not passed the exam.");
+UnderGrade ug=new UnderGrade();
+System.out.println("===========Undergrade============");
+System.out.println("Enter id, name, city, age :-");
+ug.setData(scan.nextInt(), scan.next(), scan.next(), scan.nextInt());
+System.out.println("Enter Grade :-");
+if((ug.isPassed(scan.nextDouble()))==true)
+System.out.println("You passed the exam.");
+else
+System.out.println("You have not passed the exam.");
+}
+}
+
+Student.java
+
+abstract class Student
+{
+private String name,address;
+private double grade;
+private int id,age;
+void setData(int id,String name,String address,int age){
+this.id=id;
+this.name=name;
+this.age=age;
+this.address=address;
+}
+abstract boolean isPassed(double grade);
+}
+Undergrade.java
+class UnderGrade extends Student
+{
+@Override
+boolean isPassed(double grade) {
+// TODO Auto-generated method stub
+if(grade>70)
+return true;
+else
+return false;
+}
+}
