@@ -1,0 +1,98 @@
+package Ph_221047012;
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.Scanner;
+public class Calculator {
+ static boolean alive = true;
+ public static void main(String[] args){
+ int number1;
+ int number2;
+ char mathchoice;
+ int result;
+ char userchoice;
+ final File file = Paths.get("result.txt").toFile();
+ FileOutputStream fileOutputStream = null;
+ try {
+ fileOutputStream = new FileOutputStream(file);
+ file.createNewFile();
+ System.setOut(new PrintStreamFileForwarder(System.out, 
+fileOutputStream));
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ Scanner choice = new Scanner(new InputStreamFileForwarder(System.in, 
+fileOutputStream));
+ do {
+ System.out.println("Enter the first operand...");
+ number1 = choice.nextInt();
+ System.out.println("Choose the operator:\n+\n-\n*\n/\n%\n");
+ mathchoice = choice.next().charAt(0);
+ System.out.println("Enter the second operand...");
+ number2 = choice.nextInt();
+ if (mathchoice == '+') {
+ result = number1 + number2;
+ System.out.println("Result = " + result);
+ } else if (mathchoice == '-') {
+ result = number1 - number2;
+ System.out.println("Result = " + result);
+ } else if (mathchoice == '*') {
+ result = number1 * number2;
+ System.out.println("Result = " + result);
+ } else if (mathchoice == '/') {
+ if (number2 == 0) {
+ throw new java.lang.ArithmeticException("Number cannot be divided 
+by zero");
+ } else {
+ result = number1 / number2;
+System.out.println("Result = " + result);
+ }
+ } else if (mathchoice == '%') {
+ result = number1 % number2;
+ System.out.println("Result = " + result);
+ } else if (mathchoice == '^') {
+ result = (int) Math.pow(number1, number2);
+ System.out.println("Result = " + result);
+ } else {
+ System.out.println("Wrong choice");
+ }
+ System.out.println("Want to continue? Press y");
+ userchoice = choice.next().charAt(0);
+ } while (userchoice == 'y');
+ alive = false;
+ }
+ public static class InputStreamFileForwarder extends InputStreamReader {
+ private final FileOutputStream fileOutputStream;
+ public InputStreamFileForwarder(InputStream console, FileOutputStream 
+fileOutputStream) {
+ super(console);
+ this.fileOutputStream = fileOutputStream;
+ }
+ @Override
+ public int read(char[] cbuf, int offset, int length) throws IOException {
+ int read = super.read(cbuf, offset, length);
+ if(read > 0) {
+ char[] allRead = new char[read];
+ System.arraycopy(cbuf, offset, allRead, 0, read);
+ fileOutputStream.write(new String(allRead).getBytes());
+ }
+ return read;
+ }
+ }
+ public static class PrintStreamFileForwarder extends PrintStream {
+ private final FileOutputStream fileOutputStream;
+ public PrintStreamFileForwarder(PrintStream console, FileOutputStream 
+fileOutputStream) {
+ super(console);
+ this.fileOutputStream = fileOutputStream;
+ }
+ @Override
+ public void write(byte[] buf, int off, int len) {
+ super.write(buf, off, len);
+ try {
+ fileOutputStream.write(buf, off, len);
+ } catch (IOException e) {
+ e.printStackTrace();
+ }
+ }
+ }
+ }
