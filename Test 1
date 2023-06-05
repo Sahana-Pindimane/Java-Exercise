@@ -1,82 +1,76 @@
-Grade.java
+package com.lab.internals;
+import java.sql.*;
 
-class Grade extends Student
-{
-
-@Override
-boolean isPassed(double grade) {
-
-// TODO Auto-generated method stub
-
-if(grade>80)
-return true;
-else
-return false;
+public class BookApp {
+	   
+	   static String connectionURL = "jdbc:sqlserver://localhost:3306/bookstore;integratedSecurity=false;user=root;password=Mysql1@123mysql";
+	   
+	   public static void main(String[] args) throws SQLException
+	   {
+		   Connection connection = null;
+		   Statement st = null;
+	
+		   try 
+		   {
+			   connection = DriverManager.getConnection(connectionURL);
+			   connection.setAutoCommit(false);
+			   st=connection.createStatement();
+	  
+			   String query1="INSERT INTO Book_Count VALUES(105)";
+			   String query2="INSERT INTO Book_Details VALUES(105,'djfhbufcbfoihihefhnoicfhnofwnfhoioefnegwff','Finance','Eric')";
+	    
+			   st.executeUpdate(query1);
+			   st.executeUpdate(query2);
+	    
+			   connection.commit();
+			   System.out.println("Row Inserted");
+	    } 
+	
+	catch (SQLException e) 
+	{
+	    System.out.println("Rollback");
+	    connection.rollback();
+	    e.printStackTrace();
+	}
+	
+	finally {
+	    System.out.println("Closing the connection.");
+	    if (connection != null) 
+	    	try 
+	    { 
+	    		connection.close(); 
+	    		} 
+	    catch (SQLException ignore) {}
+	}
+	
 }
 }
 
-Program5.java
-
-import java.util.Scanner;
-public class Program5 {
-
-
-/**
-
-* @param args
-
-*/
-
-public static void main(String[] args) {
-// TODO Auto-generated method stub
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create database bookstore;
+use bookstore;
 
 
-Scanner scan=new Scanner(System.in);
-Grade g=new Grade();
-System.out.println("=========Grade===========");
-System.out.println("Enter id, name, city, age :-");
-g.setData(scan.nextInt(), scan.next(), scan.next(), scan.nextInt());
-System.out.println("Enter Grade :-");
-if((g.isPassed(scan.nextDouble()))==true)
-System.out.println("You passed the exam.");
-else
-System.out.println("You have not passed the exam.");
-UnderGrade ug=new UnderGrade();
-System.out.println("===========Undergrade============");
-System.out.println("Enter id, name, city, age :-");
-ug.setData(scan.nextInt(), scan.next(), scan.next(), scan.nextInt());
-System.out.println("Enter Grade :-");
-if((ug.isPassed(scan.nextDouble()))==true)
-System.out.println("You passed the exam.");
-else
-System.out.println("You have not passed the exam.");
-}
-}
+CREATE TABLE Book_Count (
 
-Student.java
+  ID int NOT NULL,
 
-abstract class Student
-{
-private String name,address;
-private double grade;
-private int id,age;
-void setData(int id,String name,String address,int age){
-this.id=id;
-this.name=name;
-this.age=age;
-this.address=address;
-}
-abstract boolean isPassed(double grade);
-}
-Undergrade.java
-class UnderGrade extends Student
-{
-@Override
-boolean isPassed(double grade) {
-// TODO Auto-generated method stub
-if(grade>70)
-return true;
-else
-return false;
-}
-}
+  BookCount int IDENTITY(1,1),
+
+  PRIMARY KEY(ID)
+
+)
+
+CREATE TABLE Book_Details(
+
+  ID int NOT NULL,
+
+  BookName varchar(30),
+
+  Genre varchar(10),
+
+  Author varchar(30),
+
+  PRIMARY KEY(ID)
+
+)
