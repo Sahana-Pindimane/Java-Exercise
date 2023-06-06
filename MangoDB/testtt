@@ -1,0 +1,46 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class TwoPhaseCommitProgram {
+    private static final String DB1_CONNECTION_URL = "jdbc:sqlserver://localhost:1433;databaseName=db1";
+    private static final String DB2_CONNECTION_URL = "jdbc:sqlserver://localhost:1433;databaseName=db2";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
+    public static void main(String[] args) {
+        try {
+            // Establish connections to both databases
+            Connection db1Connection = DriverManager.getConnection(DB1_CONNECTION_URL, USERNAME, PASSWORD);
+            Connection db2Connection = DriverManager.getConnection(DB2_CONNECTION_URL, USERNAME, PASSWORD);
+
+            // Set autocommit to false for both connections
+            db1Connection.setAutoCommit(false);
+            db2Connection.setAutoCommit(false);
+
+            // Perform some database operations
+            updateData(db1Connection, "UPDATE table1 SET column1 = 'New Value'");
+            updateData(db2Connection, "UPDATE table2 SET column2 = 'New Value'");
+
+            // Commit the transaction
+            db1Connection.commit();
+            db2Connection.commit();
+
+            System.out.println("Transaction committed successfully!");
+
+            // Close connections
+            db1Connection.close();
+            db2Connection.close();
+        } catch (SQLException e) {
+            System.out.println("Transaction failed. Rolling back changes...");
+            e.printStackTrace();
+        }
+    }
+
+    private static void updateData(Connection connection, String sql) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.executeUpdate();
+        statement.close();
+    }
+}
